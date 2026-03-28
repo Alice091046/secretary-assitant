@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>秘书助手 - 飞书版</title>
+    <style>
+        /* 飞书风格设计 */
+        :root {
+            --feishu-blue: #3370FF;
+            --feishu-gray: #F5F5F5;
+            --feishu-text: #1F2329;
+            --feishu-border: #E5E6EB;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--feishu-gray);
+            color: var(--feishu-text);
+            min-height: 100vh;
+            padding: 16px;
+        }
+        
+        .feishu-container {
+            max-width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(31, 35, 41, 0.08);
+            overflow: hidden;
+        }
+        
+        .feishu-header {
+            background: var(--feishu-blue);
+            color: white;
+            padding: 20px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .feishu-logo {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--feishu-blue);
+        }
+        
+        .header-text h1 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .header-text p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .office-scene {
+            height: 200px;
+            background: linear-gradient(180deg, #E6F7FF 0%, #FFFFFF 100%);
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--feishu-border);
+        }
+        
+        .desk {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            background: #8B4513;
+        }
+        
+        .computer {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 50px;
+            background: #1F2329;
+            border-radius: 6px;
+        }
+        
+        .screen {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            background: #00A854;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+        }
+        
+        .pixel-character {
+            position: absolute;
+            bottom: 60px;
+            left: 30%;
+            width: 32px;
+            height: 48px;
+            transition: all 0.3s ease;
+        }
+        
+        .pixel-body {
+            width: 32px;
+            height: 32px;
+            background: var(--feishu-blue);
+            border-radius: 4px;
+            position: absolute;
+            top: 0;
+        }
+        
+        .pixel-head {
+            width: 24px;
+            height: 16px;
+            background: #FFC300;
+            position: absolute;
+            top: -16px;
+            left: 4px;
+            border-radius: 8px 8px 4px 4px;
+        }
+        
+        .status-cards {
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .status-card {
+            background: var(--feishu-gray);
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid var(--feishu-border);
+        }
+        
+        .card-title {
+            font-size: 12px;
+            color: #8F959E;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .card-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--feishu-text);
+        }
+        
+        .card-subtext {
+            font-size: 12px;
+            color: #8F959E;
+            margin-top: 4px;
+        }
+        
+        .action-buttons {
+            padding: 0 16px 16px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .feishu-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .btn-primary {
+            background: var(--feishu-blue);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #295FCC;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--feishu-text);
+            border: 1px solid var(--feishu-border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--feishu-gray);
+        }
+        
+        .typing-animation {
+            animation: typing 1s infinite;
+        }
+        
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        
+        .coffee-cup {
+            position: absolute;
+            bottom: 55px;
+            right: 25%;
+            width: 16px;
+            height: 20px;
+            background: #FF6B6B;
+            border-radius: 4px 4px 0 0;
+            display: none;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .status-online {
+            background: #E7F6EC;
+            color: #00A854;
+        }
+        
+        .status-busy {
+            background: #FFF7E6;
+            color: #FF9900;
+        }
+        
+        .status-offline {
+            background: #F5F5F5;
+            color: #8F959E;
+        }
+        
+        /* 飞书消息样式 */
+        .message-preview {
+            margin-top: 16px;
+            padding: 12px;
+            background: #F0F7FF;
+            border-radius: 8px;
+            border-left: 3px solid var(--feishu-blue);
+        }
+        
+        .message-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .message-content {
+            font-size: 12px;
+            color: #5C6066;
+        }
+        
+        /* Z Fold 7 外屏模式 (小屏) */
+        @media (max-width: 400px) {
+            .status-cards {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .office-scene {
+                height: 150px;
+            }
+            
+            .feishu-header {
+                padding: 12px;
+            }
+            
+            .header-text h1 {
+                font-size: 16px;
+            }
+            
+            .card-value {
+                font-size: 14px;
+            }
+            
+            .message-preview {
+                display: none; /* 外屏隐藏次要信息 */
+            }
+        }
+        
+        /* Z Fold 7 内屏模式 (大屏) */
+        @media (min-width: 768px) {
+            .feishu-container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            
+            .status-cards {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .office-scene {
+                height: 250px;
+            }
+            
+            .desk {
+                height: 80px;
+            }
+            
+            .computer {
+                bottom: 80px;
+                width: 100px;
+                height: 60px;
+            }
+            
+            .pixel-character {
+                width: 40px;
+                height: 60px;
+                bottom: 80px;
+            }
+            
+            .pixel-body {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .pixel-head {
+                width: 30px;
+                height: 20px;
+                top: -20px;
+                left: 5px;
+            }
+            
+            /* 大屏显示更多信息 */
+            .extended-info {
+                display: block;
+                padding: 16px;
+                border-top: 1px solid var(--feishu-border);
+            }
+        }
+        
+        /* 折叠状态检测 */
+        @media (orientation: portrait) {
+            /* 竖屏模式 */
+            .fold-status::after {
+                content: "📱 手机模式";
+            }
+        }
+        
+        @media (orientation: landscape) {
+            /* 横屏模式 */
+            .fold-status::after {
+                content: "💻 平板模式";
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="feishu-container">
+        <div class="feishu-header">
+            <div class="feishu-logo">
+                🤖
+            </div>
+            <div class="header-text">
+                <h1>秘书助手监控</h1>
+                <p>实时工作状态 · 飞书专版</p>
+            </div>
+        </div>
+        
+        <div class="office-scene">
+            <div class="desk"></div>
+            <div class="computer">
+                <div class="screen">工作中</div>
+            </div>
+            
+            <div class="pixel-character" id="character">
+                <div class="pixel-head"></div>
+                <div class="pixel-body"></div>
+            </div>
+            
+            <div class="coffee-cup" id="coffeeCup"></div>
+        </div>
+        
+        <div class="status-cards">
+            <div class="status-card">
+                <div class="card-title">📊 当前状态</div>
+                <div class="card-value" id="currentStatus">处理消息中</div>
+                <div class="card-subtext">
+                    <span class="status-badge status-online" id="statusBadge">在线</span>
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <div class="card-title">📝 今日任务</div>
+                <div class="card-value" id="todayTasks">开发飞书应用</div>
+                <div class="card-subtext" id="taskProgress">进度: 70%</div>
+            </div>
+            
+            <div class="status-card">
+                <div class="card-title">⏰ 在线时长</div>
+                <div class="card-value" id="onlineTime">2小时</div>
+                <div class="card-subtext" id="lastActive">刚刚活跃</div>
+            </div>
+            
+            <div class="status-card">
+                <div class="card-title">💬 消息处理</div>
+                <div class="card-value" id="messageCount">24条</div>
+                <div class="card-subtext">今日已处理</div>
+            </div>
+        </div>
+        
+        <div class="message-preview">
+            <div class="message-title">最新消息处理</div>
+            <div class="message-content" id="latestMessage">正在开发飞书内小组件应用...</div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="feishu-btn btn-primary" onclick="refreshStatus()">
+                🔄 刷新状态
+            </button>
+            <button class="feishu-btn btn-secondary" onclick="sendMessage()">
+                💬 发送消息
+            </button>
+        </div>
+        
+        <!-- Z Fold 7 专属功能 -->
+        <div class="extended-info" id="extendedInfo" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div class="card-title">📱 设备适配</div>
+                <div class="fold-status" style="font-size: 12px; color: #8F959E;"></div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                <div class="status-card">
+                    <div class="card-title">🔄 今日任务</div>
+                    <div class="card-value" id="todayTaskList">3项进行中</div>
+                    <div class="card-subtext">点击查看详情</div>
+                </div>
+                
+                <div class="status-card">
+                    <div class="card-title">📈 工作效率</div>
+                    <div class="card-value" id="efficiency">85%</div>
+                    <div class="card-subtext">今日平均</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 16px;">
+                <div class="card-title">🎯 快速操作</div>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                    <button class="feishu-btn btn-secondary" style="flex: 1; font-size: 12px;" onclick="quickAction('remind')">
+                        ⏰ 设置提醒
+                    </button>
+                    <button class="feishu-btn btn-secondary" style="flex: 1; font-size: 12px;" onclick="quickAction('summary')">
+                        📊 今日汇总
+                    </button>
+                    <button class="feishu-btn btn-secondary" style="flex: 1; font-size: 12px;" onclick="quickAction('settings')">
+                        ⚙️ 设置
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 状态数据
+        const statusData = {
+            states: [
+                { id: 'working', name: '处理消息中', color: 'status-online', left: '30%' },
+                { id: 'typing', name: '打字回复中', color: 'status-busy', left: '35%' },
+                { id: 'thinking', name: '思考中', color: 'status-online', left: '40%' },
+                { id: 'developing', name: '开发中', color: 'status-busy', left: '45%' },
+                { id: 'resting', name: '休息中', color: 'status-offline', left: '25%' }
+            ],
+            tasks: [
+                '处理飞书消息',
+                '开发小组件',
+                '系统优化',
+                '学习训练',
+                '计划任务'
+            ],
+            messages: [
+                '正在回复用户消息...',
+                '优化飞书应用界面...',
+                '测试小组件功能...',
+                '处理语音消息训练...',
+                '配置系统设置...'
+            ]
+        };
+        
+        let currentStateIndex = 0;
+        let lastUpdate = new Date();
+        
+        // 初始化
+        function init() {
+            updateStatus();
+            setInterval(updateStatus, 15000); // 每15秒更新
+            
+            // 模拟任务进度更新
+            setInterval(() => {
+                const progress = Math.floor(Math.random() * 30) + 60;
+                document.getElementById('taskProgress').textContent = `进度: ${progress}%`;
+            }, 30000);
+        }
+        
+        // 更新状态
+        function updateStatus() {
+            const now = new Date();
+            const diff = Math.floor((now - lastUpdate) / 1000);
+            
+            // 更新最后活跃时间
+            if (diff < 60) {
+                document.getElementById('lastActive').textContent = '刚刚活跃';
+            } else if (diff < 3600) {
+                document.getElementById('lastActive').textContent = `${Math.floor(diff/60)}分钟前`;
+            } else {
+                document.getElementById('lastActive').textContent = `${Math.floor(diff/3600)}小时前`;
+            }
+            
+            // 切换状态
+            currentStateIndex = (currentStateIndex + 1) % statusData.states.length;
+            const state = statusData.states[currentStateIndex];
+            
+            // 更新状态显示
+            document.getElementById('currentStatus').textContent = state.name;
+            document.getElementById('statusBadge').className = `status-badge ${state.color}`;
+            document.getElementById('statusBadge').textContent = 
+                state.color.includes('online') ? '在线' : 
+                state.color.includes('busy') ? '忙碌' : '离线';
+            
+            // 更新像素小人位置
+            const character = document.getElementById('character');
+            character.style.left = state.left;
+            
+            // 更新动画
+            character.classList.remove('typing-animation');
+            if (state.id === 'typing') {
+                character.classList.add('typing-animation');
+            }
+            
+            // 更新咖啡杯
+            const coffeeCup = document.getElementById('coffeeCup');
+            coffeeCup.style.display = state.id === 'resting' ? 'block' : 'none';
+            
+            // 更新任务
+            const randomTask = statusData.tasks[Math.floor(Math.random() * statusData.tasks.length)];
+            document.getElementById('todayTasks').textContent = randomTask;
+            
+            // 更新消息
+            const randomMessage = statusData.messages[Math.floor(Math.random() * statusData.messages.length)];
+            document.getElementById('latestMessage').textContent = randomMessage;
+            
+            // 更新消息计数
+            const messageCount = Math.floor(Math.random() * 10) + 20;
+            document.getElementById('messageCount').textContent = `${messageCount}条`;
+            
+            // 更新在线时间
+            const hours = 2 + Math.floor(now.getMinutes() / 60);
+            document.getElementById('onlineTime').textContent = `${hours}小时`;
+            
+            lastUpdate = now;
+        }
+        
+        // 刷新状态
+        function refreshStatus() {
+            updateStatus();
+            showToast('状态已刷新');
+        }
+        
+        // 发送消息（模拟）
+        function sendMessage() {
+            showToast('消息功能开发中...');
+        }
+        
+        // 显示提示
+        function showToast(message) {
+            // 简单的提示实现
+            alert(message);
+        }
+        
+        // Z Fold 7 专属功能
+        function detectFoldState() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const extendedInfo = document.getElementById('extendedInfo');
+            
+            // 判断是否为大屏模式（展开状态）
+            if (width >= 768) {
+                extendedInfo.style.display = 'block';
+                console.log('Z Fold 7 展开模式');
+            } else {
+                extendedInfo.style.display = 'none';
+                console.log('Z Fold 7 折叠模式');
+            }
+            
+            // 更新设备状态显示
+            const foldStatus = document.querySelector('.fold-status');
+            if (width > height) {
+                foldStatus.textContent = '💻 平板模式';
+            } else {
+                foldStatus.textContent = '📱 手机模式';
+            }
+        }
+        
+        // 快速操作功能
+        function quickAction(action) {
+            const actions = {
+                'remind': '设置提醒功能开发中...',
+                'summary': '生成今日工作汇总...',
+                'settings': '打开设置面板...'
+            };
+            
+            showToast(actions[action] || '功能开发中');
+            
+            // 模拟操作反馈
+            if (action === 'summary') {
+                setTimeout(() => {
+                    document.getElementById('efficiency').textContent = 
+                        `${Math.floor(Math.random() * 20) + 80}%`;
+                    document.getElementById('todayTaskList').textContent = 
+                        `${Math.floor(Math.random() * 3) + 2}项完成`;
+                }, 1000);
+            }
+        }
+        
+        // 屏幕旋转/折叠状态变化监听
+        window.addEventListener('resize', detectFoldState);
+        window.addEventListener('orientationchange', detectFoldState);
+        
+        // 页面加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+            detectFoldState(); // 初始检测
+            
+            // 模拟任务数据
+            setInterval(() => {
+                const tasks = ['开发', '消息', '优化', '学习'];
+                const completed = Math.floor(Math.random() * tasks.length);
+                document.getElementById('todayTaskList').textContent = 
+                    `${completed}/${tasks.length} 项完成`;
+            }, 30000);
+        });
+        
+        // 飞书环境检测
+        if (typeof Feishu !== 'undefined') {
+            console.log('运行在飞书环境中');
+            // 可以添加飞书特定的功能
+        }
+    </script>
+</body>
+</html>
